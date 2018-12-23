@@ -164,6 +164,13 @@ export class Navigation {
     return this.commands.dismissOverlay(componentId);
   }
 
+    /**
+     * Shows a snackbar on Android to the specified screen
+     */
+  public showSnackBar(componentId: string, options: object): Promise<any> {
+    return this.commands.showSnackBar(componentId, options);
+  }
+
   /**
    * Resolves arguments passed on launch
    */

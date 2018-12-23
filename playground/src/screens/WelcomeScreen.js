@@ -30,6 +30,7 @@ class WelcomeScreen extends Component {
   }
 
   render() {
+    console.log(Navigation)
     return (
       <View style={styles.bar}>
         <View style={{ width: 2, height: 2, borderRadius: 1, backgroundColor: 'red', alignSelf: 'center' }} />
@@ -52,6 +53,7 @@ class WelcomeScreen extends Component {
           <Button title='Provided Id' testID={testIDs.PROVIDED_ID} onPress={this.onClickProvidedId} />
           <Button title='Complex Layout' testID={testIDs.COMPLEX_LAYOUT_BUTTON} onPress={this.onClickComplexLayout} />
           <Button title='Push SearchBar' testID={testIDs.SHOW_TOPBAR_SEARCHBAR} onPress={this.onClickSearchBar} />
+          <Button title='Show SnackBar' testID={testIDs.SHOW_SNACKBAR_BUTTON} onPress={this.onClickSnackBar} />
           <Text style={styles.footer}>{`this.props.componentId = ${this.props.componentId}`}</Text>
         </View>
         <View style={{ width: 2, height: 2, borderRadius: 1, backgroundColor: 'red', alignSelf: 'center' }} />
@@ -564,6 +566,12 @@ class WelcomeScreen extends Component {
         name: 'navigation.playground.SearchControllerScreen'
       }
     });
+  }
+
+  onClickSnackBar = () => {
+    Navigation.showSnackBar(this.props.componentId, {
+      title: "Hello, I'm a SnackBar!"
+    })
   }
 }
 

@@ -58,6 +58,10 @@ export class NativeCommandsSender {
     return this.nativeCommandsModule.dismissOverlay(commandId, componentId);
   }
 
+  showSnackBar(commandId: string, componentId: string, options?: object) {
+    return this.nativeCommandsModule.showSnackBar(commandId, componentId, options);
+  }
+
   getLaunchArgs(commandId: string) {
     return this.nativeCommandsModule.getLaunchArgs(commandId);
   }

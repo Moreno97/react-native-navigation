@@ -30,63 +30,63 @@ import com.reactnativenavigation.viewcontrollers.navigator.Navigator;
 import java.util.Map;
 
 public class NavigationModule extends ReactContextBaseJavaModule {
-	private static final String NAME = "RNNBridgeModule";
+    private static final String NAME = "RNNBridgeModule";
 
     private final Now now = new Now();
-	private final ReactInstanceManager reactInstanceManager;
+    private final ReactInstanceManager reactInstanceManager;
     private EventEmitter eventEmitter;
 
     @SuppressWarnings("WeakerAccess")
     public NavigationModule(ReactApplicationContext reactContext, ReactInstanceManager reactInstanceManager) {
-		super(reactContext);
-		this.reactInstanceManager = reactInstanceManager;
-		reactInstanceManager.addReactInstanceEventListener(context -> eventEmitter = new EventEmitter(context));
+        super(reactContext);
+        this.reactInstanceManager = reactInstanceManager;
+        reactInstanceManager.addReactInstanceEventListener(context -> eventEmitter = new EventEmitter(context));
     }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
-	@ReactMethod
+    @ReactMethod
     public void getConstants(Promise promise) {
         ReactApplicationContext ctx = getReactApplicationContext();
         WritableMap constants = Arguments.createMap();
-        constants.putString(Constants.BACK_BUTTON_JS_KEY,    Constants.BACK_BUTTON_ID);
-        constants.putDouble(Constants.BOTTOM_TABS_HEIGHT_KEY,    Constants.BOTTOM_TABS_HEIGHT);
+        constants.putString(Constants.BACK_BUTTON_JS_KEY, Constants.BACK_BUTTON_ID);
+        constants.putDouble(Constants.BOTTOM_TABS_HEIGHT_KEY, Constants.BOTTOM_TABS_HEIGHT);
         constants.putDouble(Constants.STATUS_BAR_HEIGHT_KEY, UiUtils.pxToDp(ctx, UiUtils.getStatusBarHeight(ctx)));
-        constants.putDouble(Constants.TOP_BAR_HEIGHT_KEY,    UiUtils.pxToDp(ctx, UiUtils.getTopBarHeight(ctx)));
+        constants.putDouble(Constants.TOP_BAR_HEIGHT_KEY, UiUtils.pxToDp(ctx, UiUtils.getTopBarHeight(ctx)));
         promise.resolve(constants);
     }
 
-	@ReactMethod
-	public void setRoot(String commandId, ReadableMap rawLayoutTree, Promise promise) {
+    @ReactMethod
+    public void setRoot(String commandId, ReadableMap rawLayoutTree, Promise promise) {
         final LayoutNode layoutTree = LayoutNodeParser.parse(JSONParser.parse(rawLayoutTree).optJSONObject("root"));
-		handle(() -> {
+        handle(() -> {
             navigator().setEventEmitter(eventEmitter);
             final ViewController viewController = newLayoutFactory().create(layoutTree);
             navigator().setRoot(viewController, new NativeCommandListener(commandId, promise, eventEmitter, now));
         });
-	}
+    }
 
-	@ReactMethod
-	public void setDefaultOptions(ReadableMap options) {
+    @ReactMethod
+    public void setDefaultOptions(ReadableMap options) {
         handle(() -> navigator().setDefaultOptions(parse(options)));
     }
 
-	@ReactMethod
-	public void mergeOptions(String onComponentId, @Nullable ReadableMap options) {
-		handle(() -> navigator().mergeOptions(onComponentId, parse(options)));
-	}
+    @ReactMethod
+    public void mergeOptions(String onComponentId, @Nullable ReadableMap options) {
+        handle(() -> navigator().mergeOptions(onComponentId, parse(options)));
+    }
 
-	@ReactMethod
-	public void push(String commandId, String onComponentId, ReadableMap rawLayoutTree, Promise promise) {
+    @ReactMethod
+    public void push(String commandId, String onComponentId, ReadableMap rawLayoutTree, Promise promise) {
         final LayoutNode layoutTree = LayoutNodeParser.parse(JSONParser.parse(rawLayoutTree));
-		handle(() -> {
+        handle(() -> {
             final ViewController viewController = newLayoutFactory().create(layoutTree);
             navigator().push(onComponentId, viewController, new NativeCommandListener(commandId, promise, eventEmitter, now));
         });
-	}
+    }
 
     @ReactMethod
     public void setStackRoot(String commandId, String onComponentId, ReadableMap rawLayoutTree, Promise promise) {
@@ -97,84 +97,90 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         });
     }
 
-	@ReactMethod
-	public void pop(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
-		handle(() -> navigator().pop(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
-	}
+    @ReactMethod
+    public void pop(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
+        handle(() -> navigator().pop(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	@ReactMethod
-	public void popTo(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
-		handle(() -> navigator().popTo(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
-	}
+    @ReactMethod
+    public void popTo(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
+        handle(() -> navigator().popTo(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	@ReactMethod
-	public void popToRoot(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
-		handle(() -> navigator().popToRoot(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
-	}
+    @ReactMethod
+    public void popToRoot(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
+        handle(() -> navigator().popToRoot(componentId, parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	@ReactMethod
-	public void showModal(String commandId, ReadableMap rawLayoutTree, Promise promise) {
-		final LayoutNode layoutTree = LayoutNodeParser.parse(JSONParser.parse(rawLayoutTree));
-		handle(() -> {
+    @ReactMethod
+    public void showModal(String commandId, ReadableMap rawLayoutTree, Promise promise) {
+        final LayoutNode layoutTree = LayoutNodeParser.parse(JSONParser.parse(rawLayoutTree));
+        handle(() -> {
             final ViewController viewController = newLayoutFactory().create(layoutTree);
             navigator().showModal(viewController, new NativeCommandListener(commandId, promise, eventEmitter, now));
         });
-	}
+    }
 
-	@ReactMethod
-	public void dismissModal(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
-		handle(() -> {
+    @ReactMethod
+    public void dismissModal(String commandId, String componentId, @Nullable ReadableMap mergeOptions, Promise promise) {
+        handle(() -> {
             navigator().mergeOptions(componentId, parse(mergeOptions));
             navigator().dismissModal(componentId, new NativeCommandListener(commandId, promise, eventEmitter, now));
         });
-	}
+    }
 
     @ReactMethod
-	public void dismissAllModals(String commandId, @Nullable ReadableMap mergeOptions, Promise promise) {
-		handle(() -> navigator().dismissAllModals(parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
-	}
+    public void dismissAllModals(String commandId, @Nullable ReadableMap mergeOptions, Promise promise) {
+        handle(() -> navigator().dismissAllModals(parse(mergeOptions), new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	@ReactMethod
-	public void showOverlay(String commandId, ReadableMap rawLayoutTree, Promise promise) {
+    @ReactMethod
+    public void showOverlay(String commandId, ReadableMap rawLayoutTree, Promise promise) {
         final LayoutNode layoutTree = LayoutNodeParser.parse(JSONParser.parse(rawLayoutTree));
         handle(() -> {
             final ViewController viewController = newLayoutFactory().create(layoutTree);
             navigator().showOverlay(viewController, new NativeCommandListener(commandId, promise, eventEmitter, now));
         });
-	}
+    }
 
-	@ReactMethod
-	public void dismissOverlay(String commandId, String componentId, Promise promise) {
-		handle(() -> navigator().dismissOverlay(componentId, new NativeCommandListener(commandId, promise, eventEmitter, now)));
-	}
+    @ReactMethod
+    public void dismissOverlay(String commandId, String componentId, Promise promise) {
+        handle(() -> navigator().dismissOverlay(componentId, new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	private Navigator navigator() {
-		return activity().getNavigator();
-	}
+    @ReactMethod
+    public void showSnackBar(String commandId, String componentId, @Nullable ReadableMap options, Promise promise) {
+        System.out.println(parse(options).snackBarOptions);
+        handle(() -> navigator().showSnackBar(componentId, parse(options), new NativeCommandListener(commandId, promise, eventEmitter, now)));
+    }
 
-	@NonNull
-	private LayoutFactory newLayoutFactory() {
-		return new LayoutFactory(activity(),
+    private Navigator navigator() {
+        return activity().getNavigator();
+    }
+
+    @NonNull
+    private LayoutFactory newLayoutFactory() {
+        return new LayoutFactory(activity(),
                 navigator().getChildRegistry(),
                 reactInstanceManager,
                 eventEmitter,
                 externalComponentCreator(),
                 navigator().getDefaultOptions()
         );
-	}
+    }
 
-    private  Options parse(@Nullable ReadableMap mergeOptions) {
+    private Options parse(@Nullable ReadableMap mergeOptions) {
         return mergeOptions == null ? Options.EMPTY : Options.parse(new TypefaceLoader(activity()), JSONParser.parse(mergeOptions));
     }
 
-	private Map<String, ExternalComponentCreator> externalComponentCreator() {
+    private Map<String, ExternalComponentCreator> externalComponentCreator() {
         return ((NavigationApplication) activity().getApplication()).getExternalComponents();
     }
 
-	private void handle(Runnable task) {
-		if (activity() == null || activity().isFinishing()) return;
-		UiThread.post(task);
-	}
+    private void handle(Runnable task) {
+        if (activity() == null || activity().isFinishing()) return;
+        UiThread.post(task);
+    }
 
     private NavigationActivity activity() {
         return (NavigationActivity) getCurrentActivity();

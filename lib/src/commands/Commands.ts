@@ -144,6 +144,13 @@ export class Commands {
     return result;
   }
 
+  public showSnackBar(componentId: string, options: object) {
+      const commandId = this.uniqueIdProvider.generate('showSnackBar');
+      const result = this.nativeCommandsSender.showSnackBar(commandId, componentId, options);
+      this.commandsObserver.notify('showSnackBar', { commandId, componentId, options });
+      return result;
+  }
+
   public getLaunchArgs() {
     const commandId = this.uniqueIdProvider.generate('getLaunchArgs');
     const result = this.nativeCommandsSender.getLaunchArgs(commandId);
